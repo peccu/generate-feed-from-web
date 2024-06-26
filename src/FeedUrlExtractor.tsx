@@ -67,7 +67,11 @@ const FeedUrlExtractor = () => {
                   {feedUrl}
                 </a>
                 <CopyToClipboard text={feedUrl}>
-                  <button>Copy to Clipboard</button>
+                  <button
+                    className="bg-zinc-950 text-white py-1 px-4 rounded-md hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 disabled:opacity-50"
+                  >
+                    Copy to Clipboard
+                  </button>
                 </CopyToClipboard>
               </li>
             ))}
