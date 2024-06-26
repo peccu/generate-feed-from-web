@@ -45,7 +45,7 @@ const FeedUrlExtractor = () => {
         <button
           type="submit"
           disabled={isLoading}
-          className="mt-2 w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 disabled:opacity-50"
+          className="mt-2 w-full bg-zinc-950 text-white py-2 px-4 rounded-md hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 disabled:opacity-50"
         >
           {isLoading ? 'Loading...' : 'Extract Feed URLs'}
         </button>
@@ -67,8 +67,8 @@ const FeedUrlExtractor = () => {
                   {feedUrl}
                 </a>
                 <CopyToClipboard text={feedUrl}>
-            <button>Copy to Clipboard</button>
-          </CopyToClipboard>
+                  <button>Copy to Clipboard</button>
+                </CopyToClipboard>
               </li>
             ))}
           </ul>
