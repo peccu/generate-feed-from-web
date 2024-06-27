@@ -3,7 +3,7 @@ import { CopyToClipboard } from "react-copy-to-clipboard";
 
 
 const FeedUrlExtractor = () => {
-  const [url, setUrl] = useState('');
+  const [url, setUrl] = useState(location.pathname.slice(1) || '');
   const [feedUrls, setFeedUrls] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
