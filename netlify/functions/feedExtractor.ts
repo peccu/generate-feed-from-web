@@ -14,7 +14,13 @@ const handler: Handler = async (event) => {
   console.log(`Fetching ${url}`);
   try {
     const html = await fetchHtml(url)
-    console.log(`html: ${html}`);
+    if(html.length == 0){
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ error: 'Cant fetch html' }),
+      }
+    }
+    // console.log(`html: ${html}`);
     const feedUrls = extractFeedUrls(html, url)
 
     return {
@@ -44,7 +50,7 @@ function extractFeedUrls(html: string, baseUrl: string): string[] {
   const regex = /<link[^>]*type=["'](application\/rss\+xml|application\/atom\+xml)["'][^>]*href=["']([^"']+)["'][^>]*>/gi
   const feedUrls: string[] = []
   let match: RegExpExecArray | null;
-  console.log(`matched count: ${html.match(regex)?.length}`);
+  // console.log(`matched count: ${html.match(regex)?.length}`);
   while ((match = regex.exec(html)) !== null) {
     const feedUrl = new URL(match[2], baseUrl).href
     feedUrls.push(feedUrl)
