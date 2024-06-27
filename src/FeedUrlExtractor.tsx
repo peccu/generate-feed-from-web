@@ -23,6 +23,9 @@ const FeedUrlExtractor = () => {
       }
 
       setFeedUrls(data.feedUrls);
+      if (data.feedUrls.length === 0){
+        setError('No feed URLs found');
+      }
     } catch (err) {
       setError(err.message);
     } finally {
