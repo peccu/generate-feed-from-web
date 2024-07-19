@@ -1,7 +1,6 @@
 import { Handler, HandlerEvent, HandlerContext } from "@netlify/functions";
 import { create } from 'xmlbuilder2';
 import * as cheerio from 'cheerio';
-import * as https from 'https';
 import { URL } from 'url';
 
 interface Article {
@@ -19,24 +18,11 @@ interface Selectors {
 }
 
 async function fetchHTML(url: string): Promise<string> {
-  return new Promise((resolve, reject) => {
-    https.get(url, (res) => {
-      if (res.statusCode !== 200) {
-        reject(new Error(`HTTP error! status: ${res.statusCode}`));
-        return;
-      }
-
-      let data = '';
-      res.on('data', (chunk) => {
-        data += chunk;
-      });
-      res.on('end', () => {
-        resolve(data);
-      });
-    }).on('error', (error) => {
-      reject(error);
-    });
-  });
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+  return await response.text();
 }
 
 function generateRSSFeed(articles: Article[], channelInfo: { title: string; link: string; description: string }): string {
