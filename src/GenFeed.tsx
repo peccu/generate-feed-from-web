@@ -17,6 +17,7 @@ const GenFeed = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [apiUrl, setApiUrl] = useState('');
+  const required = ['url', 'articleSelector', 'linkSelector', 'channelTitle'];
 
   useEffect(() => {
     updateApiUrl();
@@ -90,7 +91,7 @@ const GenFeed = () => {
         {Object.keys(formData).map((key) => (
           <div key={key}>
             <label htmlFor={key} className="block text-sm font-medium text-gray-700">
-              {key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')}:
+              {key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')}: {required.indexOf(key) >= 0 && <span className="text-red-500">*</span>}
             </label>
             <input
               type={key.includes('url') ? 'url' : 'text'}

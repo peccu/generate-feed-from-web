@@ -99,9 +99,8 @@ const handler: Handler = async (event: HandlerEvent, context: HandlerContext) =>
     channelTitle, channelLink, channelDescription 
   } = params;
 
-  if (!url || !articleSelector || !titleSelector || !linkSelector || 
-      !descriptionSelector || !pubDateSelector || 
-      !channelTitle || !channelLink || !channelDescription) {
+  if (!url || !articleSelector || !linkSelector || 
+      !channelTitle) {
     return {
       statusCode: 400,
       body: JSON.stringify({ error: "Missing required parameters" })
