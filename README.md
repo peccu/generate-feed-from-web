@@ -1,1 +1,1 @@
-# feedurl-from-url
+# generate feed from web
