@@ -1,7 +1,7 @@
 import { Handler, HandlerEvent, HandlerContext } from "@netlify/functions";
-import { create } from 'xmlbuilder2';
-import * as cheerio from 'cheerio';
-import { URL } from 'url';
+import { create } from "xmlbuilder2";
+import * as cheerio from "cheerio";
+import { URL } from "url";
 
 interface Article {
   title: string;
@@ -25,30 +25,52 @@ async function fetchHTML(url: string): Promise<string> {
   return await response.text();
 }
 
-function generateRSSFeed(articles: Article[], channelInfo: { title: string; link: string; description: string }): string {
-  const feed = create({ version: '1.0', encoding: 'UTF-8' })
-    .ele('rss', { version: '2.0' })
-      .ele('channel')
-        .ele('title').txt(channelInfo.title).up()
-        .ele('link').txt(channelInfo.link).up()
-        .ele('description').txt(channelInfo.description).up();
+function generateRSSFeed(
+  articles: Article[],
+  channelInfo: { title: string; link: string; description: string },
+): string {
+  const feed = create({ version: "1.0", encoding: "UTF-8" })
+    .ele("rss", { version: "2.0" })
+    .ele("channel")
+    .ele("title")
+    .txt(channelInfo.title)
+    .up()
+    .ele("link")
+    .txt(channelInfo.link)
+    .up()
+    .ele("description")
+    .txt(channelInfo.description)
+    .up();
 
-  articles.forEach(article => {
-    feed.ele('item')
-      .ele('title').txt(article.title).up()
-      .ele('link').txt(article.link).up()
-      .ele('description').txt(article.description).up()
-      .ele('pubDate').txt(article.pubDate.toUTCString()).up();
+  articles.forEach((article) => {
+    feed
+      .ele("item")
+      .ele("title")
+      .txt(article.title)
+      .up()
+      .ele("link")
+      .txt(article.link)
+      .up()
+      .ele("description")
+      .txt(article.description)
+      .up()
+      .ele("pubDate")
+      .txt(article.pubDate.toUTCString())
+      .up();
   });
 
   return feed.end({ prettyPrint: true });
 }
 
-function extractArticleFromHTML(html: string, selectors: Selectors, baseUrl: string): Article {
+function extractArticleFromHTML(
+  html: string,
+  selectors: Selectors,
+  baseUrl: string,
+): Article {
   const $ = cheerio.load(html);
 
   const title = $(selectors.title).text().trim();
-  const relativeLink = $(selectors.link).attr('href') || '';
+  const relativeLink = $(selectors.link).attr("href") || "";
   const link = new URL(relativeLink, baseUrl).href;
   const description = $(selectors.description).html().trim();
   const pubDateString = $(selectors.pubDate).text().trim();
@@ -59,7 +81,7 @@ function extractArticleFromHTML(html: string, selectors: Selectors, baseUrl: str
     title,
     link,
     description,
-    pubDate
+    pubDate,
   };
 }
 
@@ -74,11 +96,16 @@ function extractArticlesFromPage(html: string, articleSelector: string): string[
   return articles;
 }
 
-async function generateRSSFeedFromURL(url: string, articleSelector: string, articleSelectors: Selectors, channelInfo: { title: string; link: string; description: string }): Promise<string> {
+async function generateRSSFeedFromURL(
+  url: string,
+  articleSelector: string,
+  articleSelectors: Selectors,
+  channelInfo: { title: string; link: string; description: string },
+): Promise<string> {
   const html = await fetchHTML(url);
   const extractedArticleHTMLs = extractArticlesFromPage(html, articleSelector);
-  const extractedArticles = extractedArticleHTMLs.map(articleHTML => 
-    extractArticleFromHTML(articleHTML, articleSelectors, url)
+  const extractedArticles = extractedArticleHTMLs.map((articleHTML) =>
+    extractArticleFromHTML(articleHTML, articleSelectors, url),
   );
   return generateRSSFeed(extractedArticles, channelInfo);
 }
@@ -89,21 +116,26 @@ const handler: Handler = async (event: HandlerEvent, context: HandlerContext) =>
   if (!params) {
     return {
       statusCode: 400,
-      body: JSON.stringify({ error: "Missing query parameters" })
+      body: JSON.stringify({ error: "Missing query parameters" }),
     };
   }
 
-  const { 
-    url, articleSelector, titleSelector, linkSelector, 
-    descriptionSelector, pubDateSelector, 
-    channelTitle, channelLink, channelDescription 
+  const {
+    url,
+    articleSelector,
+    titleSelector,
+    linkSelector,
+    descriptionSelector,
+    pubDateSelector,
+    channelTitle,
+    channelLink,
+    channelDescription,
   } = params;
 
-  if (!url || !articleSelector || !linkSelector || 
-      !channelTitle) {
+  if (!url || !articleSelector || !linkSelector || !channelTitle) {
     return {
       statusCode: 400,
-      body: JSON.stringify({ error: "Missing required parameters" })
+      body: JSON.stringify({ error: "Missing required parameters" }),
     };
   }
 
@@ -111,29 +143,34 @@ const handler: Handler = async (event: HandlerEvent, context: HandlerContext) =>
     title: titleSelector,
     link: linkSelector,
     description: descriptionSelector,
-    pubDate: pubDateSelector
+    pubDate: pubDateSelector,
   };
 
   const channelInfo = {
     title: channelTitle,
     link: channelLink,
-    description: channelDescription
+    description: channelDescription,
   };
 
   try {
-    const rssFeed = await generateRSSFeedFromURL(url, articleSelector, articleSelectors, channelInfo);
+    const rssFeed = await generateRSSFeedFromURL(
+      url,
+      articleSelector,
+      articleSelectors,
+      channelInfo,
+    );
     return {
       statusCode: 200,
       headers: {
-        "Content-Type": "application/rss+xml"
+        "Content-Type": "application/rss+xml",
       },
-      body: rssFeed
+      body: rssFeed,
     };
   } catch (error) {
-    console.error('Error generating RSS feed:', error);
+    console.error("Error generating RSS feed:", error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: "Failed to generate RSS feed" })
+      body: JSON.stringify({ error: "Failed to generate RSS feed" }),
     };
   }
 };
