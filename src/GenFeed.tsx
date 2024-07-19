@@ -54,7 +54,7 @@ const GenFeed = () => {
               {key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')}:
             </label>
             <input
-              type={key.includes('url') || key.includes('link') ? 'url' : 'text'}
+              type={key.includes('url') ? 'url' : 'text'}
               id={key}
               name={key}
               value={formData[key]}
