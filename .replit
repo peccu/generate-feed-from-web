@@ -1,5 +1,5 @@
 modules = ["nodejs-20", "web"]
-run = "bun run dev"
+run = "bun run build && bun run serve"
 
 [nix]
 channel = "stable-24_05"
@@ -8,11 +8,6 @@ channel = "stable-24_05"
 run = ["sh", "-c", "bun run dev"]
 
 [[ports]]
-localPort = 3000
-externalPort = 80
-exposeLocalhost = true
-
-[[ports]]
 localPort = 4173
-externalPort = 8080
+externalPort = 80
 exposeLocalhost = true
