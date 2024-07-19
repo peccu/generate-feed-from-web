@@ -69,14 +69,13 @@ function extractArticleFromHTML(
 ): Article {
   const $ = cheerio.load(html);
 
-  const title = $(selectors.title).text().trim();
+  const title = $(selectors.title).text().trim() || "";
   const relativeLink = $(selectors.link).attr("href") || "";
-  const link = new URL(relativeLink, baseUrl).href;
-  const description = $(selectors.description).html().trim();
-  const pubDateString = $(selectors.pubDate).text().trim();
+  const link = relativeLink ? new URL(relativeLink, baseUrl).href : "";
+  const description = $(selectors.description).html()?.trim() || "";
+  const pubDateString = $(selectors.pubDate).text().trim() || "";
 
-  const pubDate = new Date(pubDateString);
-
+  const pubDate = pubDateString ? new Date(pubDateString) : "";
   return {
     title,
     link,
