@@ -18,6 +18,7 @@ const GenFeed = () => {
   const [error, setError] = useState("");
   const [apiUrl, setApiUrl] = useState("");
   const required = ["url", "articleSelector", "linkSelector", "channelTitle"];
+  const [copyFeedback, setCopyFeedback] = useState("");
 
   useEffect(() => {
     updateApiUrl();
@@ -36,9 +37,9 @@ const GenFeed = () => {
   const handleApiUrlChange = (e) => {
     setApiUrl(e.target.value);
     try {
-      const url = new URL(
-        `${location.protocol}//${location.host}/${e.target.value}`,
-      );
+      const fullUrl =
+        location.protocol + "//" + location.host + "/" + e.target.value;
+      const url = new URL(fullUrl);
       const params = new URLSearchParams(url.search);
       const newFormData = {};
       for (const [key, value] of params.entries()) {
@@ -69,6 +70,16 @@ const GenFeed = () => {
       setError(err.message);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleCopy = (text, result) => {
+    if (result) {
+      setCopyFeedback("Copied!");
+      setTimeout(() => setCopyFeedback(""), 2000);
+    } else {
+      setCopyFeedback("Failed to copy");
+      setTimeout(() => setCopyFeedback(""), 2000);
     }
   };
 
@@ -129,24 +140,39 @@ const GenFeed = () => {
           <div className="bg-gray-100 p-4 rounded-md">
             <pre className="whitespace-pre-wrap break-all">{generatedFeed}</pre>
           </div>
-          <CopyToClipboard text={generatedFeed}>
-            <button className="mt-2 bg-zinc-950 text-white py-1 px-4 rounded-md hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
-              Copy RSS to Clipboard
-            </button>
-          </CopyToClipboard>
+          <div className="mt-2 flex items-center">
+            <CopyToClipboard text={generatedFeed} onCopy={handleCopy}>
+              <button className="bg-zinc-950 text-white py-1 px-4 rounded-md hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+                Copy RSS to Clipboard
+              </button>
+            </CopyToClipboard>
+            {copyFeedback && (
+              <span className="ml-2 text-green-600">{copyFeedback}</span>
+            )}
+          </div>
         </div>
       )}
 
       <div className="mt-4">
         <h2 className="text-xl font-semibold mb-2">API URL:</h2>
         <div className="bg-gray-100 p-4 rounded-md">
-          <pre className="whitespace-pre-wrap break-all">{location.protocol + "//" + location.host + apiUrl}</pre>
+          <pre className="whitespace-pre-wrap break-all">
+            {location.protocol + "//" + location.host + apiUrl}
+          </pre>
         </div>
-        <CopyToClipboard text={location.protocol + "//" + location.host + apiUrl}>
-          <button className="mt-2 bg-zinc-950 text-white py-1 px-4 rounded-md hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
-            Copy API URL to Clipboard
-          </button>
-        </CopyToClipboard>
+        <div className="mt-2 flex items-center">
+          <CopyToClipboard
+            text={location.protocol + "//" + location.host + apiUrl}
+            onCopy={handleCopy}
+          >
+            <button className="bg-zinc-950 text-white py-1 px-4 rounded-md hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+              Copy API URL to Clipboard
+            </button>
+          </CopyToClipboard>
+          {copyFeedback && (
+            <span className="ml-2 text-green-600">{copyFeedback}</span>
+          )}
+        </div>
       </div>
     </div>
   );
