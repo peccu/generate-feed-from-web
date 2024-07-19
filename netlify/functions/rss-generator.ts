@@ -50,7 +50,7 @@ function extractArticleFromHTML(html: string, selectors: Selectors, baseUrl: str
   const title = $(selectors.title).text().trim();
   const relativeLink = $(selectors.link).attr('href') || '';
   const link = new URL(relativeLink, baseUrl).href;
-  const description = $(selectors.description).text().trim();
+  const description = $(selectors.description).html().trim();
   const pubDateString = $(selectors.pubDate).text().trim();
 
   const pubDate = new Date(pubDateString);
