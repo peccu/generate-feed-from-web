@@ -95,7 +95,7 @@ const GenFeed = () => {
     }
   };
 
-  const handleCopy = (text, result) => {
+  const handleCopy = (_text: string, result: any) => {
     if (result) {
       setCopyFeedback("Copied!");
       setTimeout(() => setCopyFeedback(""), 2000);
