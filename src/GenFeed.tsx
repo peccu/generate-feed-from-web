@@ -18,6 +18,28 @@ const GenFeed = () => {
   const [error, setError] = useState("");
   const [apiUrl, setApiUrl] = useState("");
   const required = ["url", "articleSelector", "linkSelector", "channelTitle"];
+  const groups = {
+    basic: {
+      title: "Basic Information",
+      description: "Where to pickup articles",
+      keys: ["url", "articleSelector"],
+    },
+    selectors: {
+      title: "Selectors",
+      description: "The each article's information",
+      keys: [
+        "titleSelector",
+        "linkSelector",
+        "descriptionSelector",
+        "pubDateSelector",
+      ],
+    },
+    channel: {
+      title: "Channel Information",
+      description: "Feed information",
+      keys: ["channelTitle", "channelLink", "channelDescription"],
+    },
+  };
   const [copyFeedback, setCopyFeedback] = useState("");
 
   useEffect(() => {
@@ -105,7 +127,7 @@ const GenFeed = () => {
   return (
     <div className="max-w-2xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-xl">
       <h1 className="text-2xl font-bold mb-4">GenFeed - RSS Feed Generator</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-6">
         <div>
           <label
             htmlFor="apiUrl"
@@ -123,8 +145,18 @@ const GenFeed = () => {
               focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
           />
         </div>
-        {Object.keys(formData).map((key) => (
-          <InputField name={key} isRequired={required.indexOf(key) >= 0} />
+        {Object.keys(groups).map((group) => (
+          <div className="space-y-4">
+            <h2 className="text-lg font-semibold">
+              {groups[group].title}{" "}
+              <span className="text-sm text-gray-700">
+                {groups[group].description}
+              </span>
+            </h2>
+            {groups[group].keys.map((key: string) => (
+              <InputField name={key} isRequired={required.indexOf(key) >= 0} />
+            ))}
+          </div>
         ))}
         <button
           type="submit"
