@@ -83,6 +83,25 @@ const GenFeed = () => {
     }
   };
 
+  const InputField = ({ name, isRequired = false }) => (
+    <div>
+      <label htmlFor={name} className="block text-sm font-medium text-gray-700">
+        {name.charAt(0).toUpperCase() + name.slice(1).replace(/([A-Z])/g, " $1")}:{" "}
+        {isRequired && <span className="text-red-500">*</span>}
+      </label>
+      <input
+        type={name.includes("url") ? "url" : "text"}
+        id={name}
+        name={name}
+        value={formData[name]}
+        onChange={handleChange}
+        required={isRequired}
+        className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm shadow-sm placeholder-gray-400
+          focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
+      />
+    </div>
+  );
+
   return (
     <div className="max-w-2xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-xl">
       <h1 className="text-2xl font-bold mb-4">GenFeed - RSS Feed Generator</h1>
@@ -105,23 +124,7 @@ const GenFeed = () => {
           />
         </div>
         {Object.keys(formData).map((key) => (
-          <div key={key}>
-            <label htmlFor={key} className="block text-sm font-medium text-gray-700">
-              {key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, " $1")}
-              :{" "}
-              {required.indexOf(key) >= 0 && <span className="text-red-500">*</span>}
-            </label>
-            <input
-              type={key.includes("url") ? "url" : "text"}
-              id={key}
-              name={key}
-              value={formData[key]}
-              onChange={handleChange}
-              required
-              className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm shadow-sm placeholder-gray-400
-                focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
-            />
-          </div>
+          <InputField name={key} isRequired={required.indexOf(key) >= 0} />
         ))}
         <button
           type="submit"
