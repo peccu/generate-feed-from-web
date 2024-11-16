@@ -22,7 +22,7 @@ const handler: Handler = async (event: HandlerEvent, context: HandlerContext) =>
 
   try {
     const result = await Parser.parse(url);
-    console.log(result);
+    // console.log(result);
     return {
       statusCode: 200,
       headers: {
