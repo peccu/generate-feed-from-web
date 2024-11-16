@@ -28,7 +28,7 @@ const handler: Handler = async (event: HandlerEvent, context: HandlerContext) =>
       headers: {
         "Content-Type": "application/rss+xml",
       },
-      body: result,
+      body: JSON.stringify(result),
     };
   } catch (error) {
     console.error("Error generating RSS feed:", error);
